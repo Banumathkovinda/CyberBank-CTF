@@ -1,0 +1,153 @@
+<!-- Reusable CyberBank Live Scoreboard Table Partial -->
+<div class="auth-card" style="max-width: 100%; padding: 1.5rem; background: rgba(10, 14, 20, 0.95); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+    <div>
+      <h3 style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+        <span>Live Operative Scoreboard</span>
+      </h3>
+      <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+        Official rankings across all Operation BlackVault operatives.
+      </p>
+    </div>
+    <div style="font-size: 0.8rem; font-family: var(--font-mono); color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--neon-green-bright); box-shadow: 0 0 8px var(--neon-green-bright);"></span>
+      <span>REAL-TIME SCORING ACTIVE</span>
+    </div>
+  </div>
+
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.9rem;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-muted); text-align: left;">
+          <th style="padding: 0.85rem 1rem; width: 80px;">RANK</th>
+          <th style="padding: 0.85rem 1rem;">OPERATIVE</th>
+          <th style="padding: 0.85rem 1rem; text-align: center;">ROLE</th>
+          <th style="padding: 0.85rem 1rem; text-align: center;">STAGES BREACHED</th>
+          <th style="padding: 0.85rem 1rem; text-align: center;">TIME TAKEN</th>
+          <th style="padding: 0.85rem 1rem; text-align: right;">TOTAL SCORE</th>
+          <th style="padding: 0.85rem 1rem; text-align: right;">COMPLETION DATE</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in standings %}
+        {% set is_current = current_user.is_authenticated and current_user.username == s.username %}
+        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.15s ease; {% if is_current %}background: rgba(0, 255, 102, 0.09); border-left: 3px solid var(--neon-green-bright);{% endif %}">
+          
+          <!-- Rank Column -->
+          <td style="padding: 0.75rem 1rem; font-weight: 800; vertical-align: middle;">
+            {% if s.rank == 1 %}
+              <div style="display: inline-flex; align-items: center; justify-content: center;" title="Rank 1 - Gold Champion">
+                <img src="{{ url_for('static', filename='images/badges/rank_1.png') }}" 
+                     alt="Rank 1" 
+                     style="width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(234, 179, 8, 0.35)); transition: transform 0.2s ease;"
+                     onmouseover="this.style.transform='scale(1.15)'"
+                     onmouseout="this.style.transform='scale(1.0)'" />
+              </div>
+            {% elif s.rank == 2 %}
+              <div style="display: inline-flex; align-items: center; justify-content: center;" title="Rank 2 - Silver Medalist">
+                <img src="{{ url_for('static', filename='images/badges/rank_2.png') }}" 
+                     alt="Rank 2" 
+                     style="width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(148, 163, 184, 0.35)); transition: transform 0.2s ease;"
+                     onmouseover="this.style.transform='scale(1.15)'"
+                     onmouseout="this.style.transform='scale(1.0)'" />
+              </div>
+            {% elif s.rank == 3 %}
+              <div style="display: inline-flex; align-items: center; justify-content: center;" title="Rank 3 - Bronze Medalist">
+                <img src="{{ url_for('static', filename='images/badges/rank_3.png') }}" 
+                     alt="Rank 3" 
+                     style="width: 38px; height: 38px; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(205, 127, 50, 0.35)); transition: transform 0.2s ease;"
+                     onmouseover="this.style.transform='scale(1.15)'"
+                     onmouseout="this.style.transform='scale(1.0)'" />
+              </div>
+            {% else %}
+              <span style="display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 34px; border-radius: 6px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: var(--text-muted); font-size: 0.85rem;">
+                #{{ s.rank }}
+              </span>
+            {% endif %}
+          </td>
+
+          <!-- Operative Column -->
+          <td style="padding: 0.95rem 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 28px; height: 28px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary);">
+                {{ s.username[:2]|upper }}
+              </div>
+              <div>
+                <span style="font-weight: 700; color: #ffffff;">{{ s.username }}</span>
+                {% if is_current %}
+                  <span style="display: inline-block; margin-left: 0.5rem; font-size: 0.72rem; padding: 0.15rem 0.45rem; border-radius: 3px; background: var(--neon-green-bright); color: #000; font-weight: 800;">YOU</span>
+                {% endif %}
+              </div>
+            </div>
+          </td>
+
+          <!-- Role Column -->
+          <td style="padding: 0.95rem 1rem; text-align: center;">
+            <span class="role-badge role-player" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">
+              PLAYER
+            </span>
+          </td>
+
+          <!-- Solves Column -->
+          <td style="padding: 0.95rem 1rem; text-align: center;">
+            {% if s.completed %}
+              <span style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.65rem; border-radius: 4px; background: rgba(0, 255, 102, 0.15); border: 1px solid var(--neon-green); color: var(--neon-green-bright); font-weight: 800; font-size: 0.8rem; box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);">
+                ✓ {{ s.solved_count }} / {{ total_challenges or 6 }} [COMPLETED]
+              </span>
+            {% elif s.solved_count > 0 %}
+              <span style="color: var(--cyan); font-weight: 700;">
+                {{ s.solved_count }} / {{ total_challenges or 6 }}
+              </span>
+            {% else %}
+              <span style="color: var(--text-muted);">
+                0 / {{ total_challenges or 6 }}
+              </span>
+            {% endif %}
+          </td>
+
+          <!-- Time Taken Column -->
+          <td style="padding: 0.95rem 1rem; text-align: center; font-family: var(--font-mono);">
+            {% if s.completed %}
+              <span style="display: inline-flex; align-items: center; gap: 0.35rem; color: var(--cyan); font-weight: 700; font-size: 0.88rem;">
+                {{ s.time_taken }}
+              </span>
+            {% elif s.solved_count > 0 %}
+              <span style="color: var(--text-secondary); font-size: 0.82rem;">
+                {{ s.time_taken }}
+              </span>
+            {% else %}
+              <span style="color: var(--text-muted); font-size: 0.82rem;">--</span>
+            {% endif %}
+          </td>
+
+          <!-- Score Column -->
+          <td style="padding: 0.95rem 1rem; text-align: right; font-weight: 900; font-size: 1.05rem;">
+            {% if s.total_score > 0 %}
+              <span style="color: var(--neon-green-bright); text-shadow: 0 0 8px rgba(0, 255, 102, 0.4);">
+                {{ s.total_score }} PTS
+              </span>
+            {% else %}
+              <span style="color: var(--text-muted);">0 PTS</span>
+            {% endif %}
+          </td>
+
+          <!-- Last Solve Time -->
+          <td style="padding: 0.95rem 1rem; text-align: right; color: var(--text-muted); font-size: 0.82rem;">
+            {% if s.last_solve_time %}
+              {{ s.last_solve_time.strftime('%Y-%m-%d %H:%M') }}
+            {% else %}
+              --
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" style="padding: 2.5rem 1rem; text-align: center; color: var(--text-muted);">
+            No operative standings registered yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block title %}CyberBank: Operation BlackVault CTF{% endblock %}
+
+{% block content %}
+<!-- Full-Screen Fixed Video Background Layer -->
+<div class="video-bg-wrapper">
+  <video 
+    class="video-bg-element" 
+    autoplay 
+    loop 
+    muted 
+    playsinline
+    poster="{{ url_for('static', filename='images/blackvault_banner.jpg') }}"
+  >
+    <source src="{{ url_for('static', filename='videos/blackvault_animated.mp4') }}" type="video/mp4">
+  </video>
+  <div class="video-bg-overlay"></div>
+</div>
+
+<div class="home-scroll-container">
+  <!-- Top Hero Screen: High-Clarity Artwork & Floating Action Dock -->
+  <section class="hero-screen">
+    <div class="art-clearance-spacer"></div>
+
+    <div class="action-dock">
+      <div class="dock-badge">
+        <span>●</span>
+        <span>CYBERBANK BLACKVAULT SIMULATION PLATFORM</span>
+      </div>
+      
+      <p class="dock-desc">
+        An immersive multi-stage cybersecurity proving ground. Infiltrate digital banking systems, crack intercepted cryptographic ciphers, and breach the master BlackVault server.
+      </p>
+
+      <div class="dock-buttons">
+        {% if current_user.is_authenticated %}
+          {% if user_completed_all %}
+            <a href="#scoreboard-section" class="btn btn-primary" style="background: linear-gradient(135deg, #00ff66, #00b347); border-color: #00ff66; color: #000; font-weight: 800; box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);">
+              <span>Scoreboard (Rank #{{ user_rank or '?' }})</span>
+              <span>&darr;</span>
+            </a>
+          {% endif %}
+          <a href="{{ url_for('dashboard.dashboard_view') }}" class="btn btn-primary">
+            <span>Enter Mission Matrix</span>
+            <span>-></span>
+          </a>
+          <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">Disconnect</a>
+        {% else %}
+          <a href="{{ url_for('auth.register') }}" class="btn btn-primary">
+            <span>Initialize Clearance</span>
+            <span>-></span>
+          </a>
+          <a href="{{ url_for('auth.login') }}" class="btn btn-copper">Operative Login</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Scroll Down Prompt -->
+    <a href="#{% if user_completed_all %}scoreboard-section{% else %}stages-section{% endif %}" class="scroll-down-indicator">
+      <span class="scroll-text">SCROLL DOWN FOR {% if user_completed_all %}SCOREBOARD &amp; STAGES{% else %}INFILTRATION STAGES{% endif %}</span>
+      <span class="scroll-chevron">&darr;</span>
+    </a>
+  </section>
+
+  {% if user_completed_all %}
+  <!-- Featured Scoreboard for Operatives Who Finished All Stages -->
+  <section id="scoreboard-section" style="max-width: 1100px; margin: 2rem auto 2.5rem; padding: 0 1.5rem; position: relative; z-index: 10;">
+    <div style="background: linear-gradient(135deg, rgba(0, 255, 102, 0.12), rgba(10, 14, 20, 0.95)); border: 2px solid var(--neon-green-bright); border-radius: 14px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; box-shadow: 0 0 35px rgba(0, 255, 102, 0.2); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--neon-green-bright); font-weight: 800; letter-spacing: 2px; margin-bottom: 0.35rem;">
+          &#9733; ALL OBJECTIVES CONQUERED &#9733;
+        </div>
+        <h2 style="font-size: 1.6rem; font-weight: 900; color: #ffffff; margin: 0 0 0.35rem;">
+          OPERATION BLACKVAULT COMPLETED
+        </h2>
+        <p style="color: var(--text-secondary); margin: 0; font-size: 0.92rem;">
+          Commendations, Operative <strong>{{ current_user.username }}</strong>! You have breached all 6 stages. Check your final standing and live leaderboard below.
+        </p>
+      </div>
+      <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        {% if user_rank %}
+        <div style="background: rgba(6, 8, 11, 0.9); border: 1px solid var(--neon-green-bright); border-radius: 8px; padding: 0.6rem 1.25rem; text-align: center;">
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">YOUR RANK</div>
+          <div style="font-family: var(--font-mono); font-size: 1.3rem; font-weight: 900; color: var(--neon-green-bright);">#{{ user_rank }}</div>
+        </div>
+        {% endif %}
+        {% if user_time_taken %}
+        <div style="background: rgba(6, 8, 11, 0.9); border: 1px solid var(--border-copper); border-radius: 8px; padding: 0.6rem 1.25rem; text-align: center;">
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">TIME TAKEN</div>
+          <div style="font-family: var(--font-mono); font-size: 1.15rem; font-weight: 800; color: var(--cyan);">{{ user_time_taken }}</div>
+        </div>
+        {% endif %}
+        <a href="{{ url_for('dashboard.completion_view') }}" class="btn btn-primary" style="padding: 0.7rem 1.5rem; text-decoration: none;">
+          Debrief Dossier &rarr;
+        </a>
+      </div>
+    </div>
+
+    {% include "scoreboard_table.html" %}
+  </section>
+  {% endif %}
+
+  <!-- Vertical Scroll Section: Stages One by One -->
+  <section id="stages-section" class="vertical-stages-section">
+    <div class="section-header-box">
+      <div class="section-tag">MISSION SEQUENCE</div>
+      <h2 class="section-heading">Operation BlackVault - Infiltration Stages</h2>
+      <p class="section-subtext">Follow the sequential 6-stage penetration testing path to breach CyberBank's digital core</p>
+    </div>
+
+    <div class="vertical-stages-list">
+      <!-- Stage 01 -->
+      <div class="vertical-stage-card">
+        <div class="stage-sidebar">
+          <div class="stage-step-circle">01</div>
+          <div class="stage-step-line"></div>
+        </div>
+        <div class="stage-content-box">
+          <div class="stage-box-top">
+            <span class="domain-tag domain-osint">OSINT</span>
+            <div class="stage-box-badges">
+              <span class="difficulty-pill diff-easy">EASY</span>
+              <span class="points-tag">+100 PTS</span>
+            </div>
+          </div>
+          <h3 class="stage-box-title">
+            <a href="{{ url_for('dashboard.challenge_detail_view', challenge_id=1) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;">
+              <span>Stage 01: Digital Footprint</span>
+              <span style="color: var(--neon-green-bright); font-size: 1rem;">&rarr;</span>
+            </a>
+          </h3>
+          <p class="stage-box-desc">
+            CyberBank employees have left operational traces across public repositories, forums, and employee directory metadata. Conduct open-source reconnaissance to discover leaked credentials and uncover initial entrance vectors.
+          </p>
+          <div class="stage-box-objective">
+            <strong>OBJECTIVE:</strong> Trace OSINT artifacts across external networks to retrieve the stage clearance flag.
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 02 -->
+      <div class="vertical-stage-card">
+        <div class="stage-sidebar">
+          <div class="stage-step-circle">02</div>
+          <div class="stage-step-line"></div>
+        </div>
+        <div class="stage-content-box">
+          <div class="stage-box-top">
+            <span class="domain-tag domain-stego">STEGO</span>
+            <div class="stage-box-badges">
+              <span class="difficulty-pill diff-easy">EASY</span>
+              <span class="points-tag">+150 PTS</span>
+            </div>
+          </div>
+          <h3 class="stage-box-title">Stage 02: Hidden in Plain Sight</h3>
+          <p class="stage-box-desc">
+            A rogue insider inside CyberBank exfiltrated confidential transaction ledgers embedded within promotional marketing media. Inspect visual pixel bitplanes, audio spectrograms, and metadata containers to extract the hidden payload.
+          </p>
+          <div class="stage-box-objective">
+            <strong>OBJECTIVE:</strong> Uncover steganographic anomalies in multi-layer media files to reconstruct the secret data.
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 03 -->
+      <div class="vertical-stage-card">
+        <div class="stage-sidebar">
+          <div class="stage-step-circle">03</div>
+          <div class="stage-step-line"></div>
+        </div>
+        <div class="stage-content-box">
+          <div class="stage-box-top">
+            <span class="domain-tag domain-web">WEB APP</span>
+            <div class="stage-box-badges">
+              <span class="difficulty-pill diff-medium">MEDIUM</span>
+              <span class="points-tag">+200 PTS</span>
+            </div>
+          </div>
+          <h3 class="stage-box-title">Stage 03: Broken Banking Portal</h3>
+          <p class="stage-box-desc">
+            The customer-facing online banking portal was deployed with critical security flaws. Exploit SQL Injection to bypass authentication filters, defeat session controls, and leverage IDOR to dump internal ledger records.
+          </p>
+          <div class="stage-box-objective">
+            <strong>OBJECTIVE:</strong> Bypass web portal authentication and extract internal transaction database flags.
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 04 -->
+      <div class="vertical-stage-card">
+        <div class="stage-sidebar">
+          <div class="stage-step-circle">04</div>
+          <div class="stage-step-line"></div>
+        </div>
+        <div class="stage-content-box">
+          <div class="stage-box-top">
+            <span class="domain-tag domain-crypto">CRYPTO</span>
+            <div class="stage-box-badges">
+              <span class="difficulty-pill diff-medium">MEDIUM</span>
+              <span class="points-tag">+250 PTS</span>
+            </div>
+          </div>
+          <h3 class="stage-box-title">Stage 04: The Banker's Secret Code</h3>
+          <p class="stage-box-desc">
+            Intercepted communications between corrupt bank executives contain scrambled wire transfer authorizations. Exploit weak RSA prime generation, defeat custom substitution ciphers, and decrypt the transmission streams.
+          </p>
+          <div class="stage-box-objective">
+            <strong>OBJECTIVE:</strong> Break cryptographic implementations to recover plain-text wire authorization tokens.
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 05 -->
+      <div class="vertical-stage-card">
+        <div class="stage-sidebar">
+          <div class="stage-step-circle">05</div>
+          <div class="stage-step-line"></div>
+        </div>
+        <div class="stage-content-box">
+          <div class="stage-box-top">
+            <span class="domain-tag domain-forensics">FORENSICS</span>
+            <div class="stage-box-badges">
+              <span class="difficulty-pill diff-medium">MEDIUM</span>
+              <span class="points-tag">+300 PTS</span>
+            </div>
+          </div>
+          <h3 class="stage-box-title">Stage 05: Digital Crime Scene</h3>
+          <p class="stage-box-desc">
+            An alert was triggered during unauthorized data movement on the bank's core SWIFT gateway. Analyze raw volatile RAM memory dumps and network packet captures (PCAP) to trace attacker persistence and extract artifacts.
+          </p>
+          <div class="stage-box-objective">
+            <strong>OBJECTIVE:</strong> Reconstruct the attacker's timeline and exfiltrate forensics memory flags.
+          </div>
+        </div>
+      </div>
+
+      <!-- Stage 06 -->
+      <div class="vertical-stage-card">
+        <div class="stage-sidebar">
+          <div class="stage-step-circle">06</div>
+          <div class="stage-step-line"></div>
+        </div>
+        <div class="stage-content-box">
+          <div class="stage-box-top">
+            <span class="domain-tag domain-linux">LINUX ROOT</span>
+            <div class="stage-box-badges">
+              <span class="difficulty-pill diff-hard">HARD</span>
+              <span class="points-tag">+400 PTS</span>
+            </div>
+          </div>
+          <h3 class="stage-box-title">Stage 06: BlackVault Server</h3>
+          <p class="stage-box-desc">
+            You have obtained standard unprivileged shell access to the internal CyberBank Linux host. Enumerate vulnerable SUID binaries, hijack misconfigured root cron scripts, and escalate privileges to breach the master BlackVault.
+          </p>
+          <div class="stage-box-objective">
+            <strong>OBJECTIVE:</strong> Execute local privilege escalation to root on the server and capture the final BlackVault flag.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% if not user_completed_all %}
+    <!-- Classified Scoreboard Teaser for In-Progress Operatives -->
+    <div id="scoreboard-section" style="max-width: 900px; margin: 3.5rem auto 1rem; width: 100%;">
+      <div style="background: rgba(10, 14, 20, 0.9); border: 1px dashed rgba(200, 122, 72, 0.4); border-radius: 12px; padding: 2.25rem 2rem; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-copper); background: rgba(200, 122, 72, 0.1); margin-bottom: 0.75rem; color: var(--copper-light); font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; letter-spacing: 1px;">[SEC]</div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--copper-light); font-weight: 800; letter-spacing: 2px; margin-bottom: 0.35rem;">
+          CLEARANCE LEVEL: CLASSIFIED
+        </div>
+        <h2 style="font-size: 1.4rem; font-weight: 900; color: #ffffff; margin: 0 0 0.5rem;">
+          Operative Scoreboard Locked
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem; max-width: 550px; margin: 0 auto 1.5rem; line-height: 1.6;">
+          Official leaderboard standings and breach speed records are encrypted. Complete all 6 infiltration stages of Operation BlackVault to unlock the scoreboard and record your final breach time.
+        </p>
+        {% if current_user.is_authenticated %}
+          <a href="{{ url_for('dashboard.dashboard_view') }}" class="btn btn-primary" style="padding: 0.65rem 1.75rem; text-decoration: none;">
+            Continue Infiltration &rarr;
+          </a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="btn btn-primary" style="padding: 0.65rem 1.75rem; text-decoration: none;">
+            Authenticate Operative &rarr;
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Bottom Launch Action -->
+    <div style="text-align: center; margin: 3.5rem 0 1rem 0;">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('dashboard.dashboard_view') }}" class="btn btn-primary" style="padding: 0.9rem 2.2rem; font-size: 1.05rem;">
+          <span>Enter Mission Matrix</span>
+          <span>-></span>
+        </a>
+      {% else %}
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary" style="padding: 0.9rem 2.2rem; font-size: 1.05rem;">
+          <span>Begin Operation BlackVault</span>
+          <span>-></span>
+        </a>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

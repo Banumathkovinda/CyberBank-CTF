@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CyberBank: Operation BlackVault{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <!-- Left: Brand Logo -->
+      <a href="{{ url_for('index') }}" class="brand">
+        <span class="brand-badge">CTF</span>
+        <span class="brand-text">CyberBank</span>
+        <span class="brand-vault">::BlackVault</span>
+      </a>
+
+      <!-- Middle: Centered Navigation Links -->
+      <nav class="nav-center">
+        <ul class="nav-links nav-main-links" id="navMenu">
+          {% if request.endpoint not in ['auth.login', 'auth.register'] %}
+            <li><a href="{{ url_for('index') }}" class="nav-link">Home</a></li>
+          {% endif %}
+          {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('dashboard.dashboard_view') }}" class="nav-link nav-link-matrix">Mission Matrix</a></li>
+            {% if current_user.role == 'admin' or current_user.has_completed_all_stages() %}
+              <li><a href="{{ url_for('dashboard.scoreboard_view') }}" class="nav-link nav-link-scoreboard">Scoreboard</a></li>
+            {% else %}
+              <li><a href="{{ url_for('dashboard.scoreboard_view') }}" class="nav-link nav-link-locked" title="Scoreboard unlocks after completing all 6 stages">Scoreboard</a></li>
+            {% endif %}
+          {% endif %}
+        </ul>
+      </nav>
+
+      <!-- Right: Admin & User Controls -->
+      <div class="nav-admin-side">
+        {% if current_user.is_authenticated %}
+          {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('dashboard.admin_view') }}" class="nav-admin-badge" title="Access Restricted Admin Console">
+              <span>Admin Console</span>
+            </a>
+          {% endif %}
+          <div class="nav-user">
+            <span class="user-status-dot"></span>
+            <span class="nav-username">{{ current_user.username }}</span>
+            <span class="role-badge role-{{ current_user.role }}">{{ current_user.role }}</span>
+          </div>
+          <a href="{{ url_for('auth.logout') }}" class="btn btn-outline nav-btn-logout">Disconnect</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="nav-link">Login</a>
+          <a href="{{ url_for('auth.register') }}" class="btn btn-primary nav-btn-reg">Register</a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile Hamburger Toggle -->
+      {% if request.endpoint not in ['auth.login', 'auth.register'] or current_user.is_authenticated %}
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" onclick="toggleMobileMenu()">
+        <span class="nav-bar"></span>
+        <span class="nav-bar"></span>
+        <span class="nav-bar"></span>
+      </button>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Auto-Dismissing Popup Toast Alerts -->
+  <div class="flash-toast-container" id="toastContainer">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="toast-alert alert-{{ category if category != 'error' else 'danger' }}">
+            <div class="toast-content">
+              {% if category == 'success' %}
+                <span class="role-badge role-player">SUCCESS</span>
+              {% elif category == 'danger' or category == 'error' %}
+                <span class="role-badge role-admin">ERROR</span>
+              {% elif category == 'warning' %}
+                <span class="role-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">WARNING</span>
+              {% else %}
+                <span class="role-badge" style="background: rgba(200, 122, 72, 0.2); color: var(--copper-light); border: 1px solid rgba(200, 122, 72, 0.4);">INFO</span>
+              {% endif %}
+              <span class="toast-message">{{ message }}</span>
+            </div>
+            <button type="button" class="toast-close-btn" onclick="dismissToast(this.parentElement)">&times;</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Main Content Block -->
+  <main class="main-content">
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>CyberBank: Operation BlackVault &copy; 2024–2026. Educational Cybersecurity Simulation Platform.</p>
+    </div>
+  </footer>
+
+  <!-- Mobile Navigation & Toast Script -->
+  <script>
+    function toggleMobileMenu() {
+      const navMenu = document.getElementById('navMenu');
+      const navToggle = document.getElementById('navToggle');
+      if (navMenu && navToggle) {
+        navMenu.classList.toggle('nav-open');
+        navToggle.classList.toggle('active');
+      }
+    }
+
+    // Close menu when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      const navMenu = document.getElementById('navMenu');
+      const navToggle = document.getElementById('navToggle');
+      if (navMenu && navToggle && navMenu.classList.contains('nav-open')) {
+        if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+          navMenu.classList.remove('nav-open');
+          navToggle.classList.remove('active');
+        }
+      }
+    });
+
+    function dismissToast(el) {
+      if (!el) return;
+      el.classList.add('toast-hiding');
+      setTimeout(() => {
+        el.remove();
+      }, 400);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const toasts = document.querySelectorAll('.toast-alert');
+      toasts.forEach((toast, idx) => {
+        // Auto dismiss after 2.2 seconds
+        let timer = setTimeout(() => {
+          dismissToast(toast);
+        }, 2200 + (idx * 200));
+
+        // Pause on hover
+        toast.addEventListener('mouseenter', () => clearTimeout(timer));
+        toast.addEventListener('mouseleave', () => {
+          timer = setTimeout(() => dismissToast(toast), 1500);
+        });
+      });
+    });
+  </script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

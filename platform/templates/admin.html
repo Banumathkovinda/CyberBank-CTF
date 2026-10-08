@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Console | CyberBank: Operation BlackVault{% endblock %}
+
+{% block content %}
+<div class="dashboard-container" style="max-width: 1200px; margin: 0 auto;">
+  <!-- Header HUD Panel -->
+  <div class="hud-panel" style="border-color: rgba(239, 68, 68, 0.5); background: rgba(18, 12, 14, 0.85);">
+    <div class="hud-header">
+      <div class="hud-user">
+        <div class="hud-avatar" style="background: rgba(239, 68, 68, 0.25); color: #ef4444; font-size: 0.95rem; font-weight: 800; border: 1px solid #ef4444;">ROOT</div>
+        <div>
+          <div class="hud-label" style="color: #ef4444; font-weight: 800;">RESTRICTED ROOT CLEARANCE</div>
+          <h1 class="hud-username">BlackVault Administration</h1>
+        </div>
+        <span class="role-badge role-admin">ADMIN CLEARANCE</span>
+      </div>
+
+      <div class="hud-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;">
+        <div class="hud-stat-box">
+          <div class="hud-stat-label">OPERATIVES</div>
+          <div class="hud-stat-val text-cyan">{{ total_users }}</div>
+        </div>
+        <div class="hud-stat-box">
+          <div class="hud-stat-label">ACTIVE STAGES</div>
+          <div class="hud-stat-val text-green">{{ total_challenges }}</div>
+        </div>
+        <div class="hud-stat-box">
+          <div class="hud-stat-label">SUBMISSIONS</div>
+          <div class="hud-stat-val" style="color: var(--copper-light);">{{ total_submissions }}</div>
+        </div>
+        <div class="hud-stat-box" style="border-color: rgba(239, 68, 68, 0.4);">
+          <div class="hud-stat-label">ANTI-CHEAT</div>
+          <div class="hud-stat-val" style="color: #ef4444;">{{ anti_cheat_count }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: Registered Operatives & Live Leaderboard -->
+  <div class="stages-header" style="margin-top: 2.5rem;">
+    <div>
+      <h2 class="stages-title" style="font-size: 1.35rem;">Registered Operatives &amp; Standings</h2>
+      <p class="stages-subtitle">Live participant accounts, security clearance roles, completion duration, and ranked tournament badges</p>
+    </div>
+  </div>
+
+  <!-- Top Operatives Podium Showcase (Admin View) -->
+  {% if standings and standings|length > 0 %}
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; margin-bottom: 1.75rem;">
+    {% for s in standings[:3] %}
+    {% set border_col = '#eab308' if s.rank == 1 else ('#94a3b8' if s.rank == 2 else '#cd7f32') %}
+    {% set glow_col = 'rgba(234, 179, 8, 0.25)' if s.rank == 1 else ('rgba(148, 163, 184, 0.2)' if s.rank == 2 else 'rgba(205, 127, 50, 0.2)') %}
+    <div style="background: rgba(13, 17, 23, 0.85); border: 1px solid {{ border_col }}; border-radius: 12px; padding: 1.25rem; display: flex; align-items: center; gap: 1.25rem; box-shadow: 0 4px 20px {{ glow_col }};">
+      <img src="{{ url_for('static', filename='images/badges/rank_' ~ s.rank ~ '.png') }}" 
+           alt="Rank {{ s.rank }}" 
+           style="width: 58px; height: 58px; object-fit: contain; filter: drop-shadow(0 2px 8px {{ glow_col }});" />
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 0.72rem; font-family: var(--font-mono); color: {{ border_col }}; font-weight: 800; letter-spacing: 1px;">
+          {% if s.rank == 1 %}1ST PLACE CHAMPION{% elif s.rank == 2 %}2ND PLACE SILVER{% else %}3RD PLACE BRONZE{% endif %}
+        </div>
+        <div style="font-size: 1.15rem; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          {{ s.username }}
+        </div>
+        <div style="display: flex; gap: 0.75rem; margin-top: 0.25rem; font-size: 0.82rem; font-family: var(--font-mono);">
+          <span style="color: var(--neon-green-bright); font-weight: 700;">{{ s.total_score }} PTS</span>
+          {% if s.completed %}
+            <span style="color: var(--cyan);">{{ s.time_taken }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="auth-card" style="max-width: 100%; padding: 1.25rem; margin-top: 0.75rem;">
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; font-family: var(--font-mono);">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted); text-align: left;">
+            <th style="padding: 0.75rem 1rem; width: 75px;">RANK</th>
+            <th style="padding: 0.75rem 1rem;">ID</th>
+            <th style="padding: 0.75rem 1rem;">OPERATIVE</th>
+            <th style="padding: 0.75rem 1rem;">EMAIL</th>
+            <th style="padding: 0.75rem 1rem;">ROLE</th>
+            <th style="padding: 0.75rem 1rem; text-align: center;">SOLVES</th>
+            <th style="padding: 0.75rem 1rem; text-align: center;">TIME TAKEN</th>
+            <th style="padding: 0.75rem 1rem; text-align: right;">TOTAL SCORE</th>
+            <th style="padding: 0.75rem 1rem; text-align: right;">JOINED</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users_list %}
+          {% set user_standing = namespace(rank='--', time='--', completed=false) %}
+          {% for s in standings %}
+            {% if s.username == u.username %}
+              {% set user_standing.rank = s.rank %}
+              {% set user_standing.time = s.time_taken %}
+              {% set user_standing.completed = s.completed %}
+            {% endif %}
+          {% endfor %}
+          <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <td style="padding: 0.65rem 1rem; vertical-align: middle;">
+              {% if user_standing.rank == 1 %}
+                <img src="{{ url_for('static', filename='images/badges/rank_1.png') }}" alt="Rank 1" style="width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(234, 179, 8, 0.4));" />
+              {% elif user_standing.rank == 2 %}
+                <img src="{{ url_for('static', filename='images/badges/rank_2.png') }}" alt="Rank 2" style="width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(148, 163, 184, 0.4));" />
+              {% elif user_standing.rank == 3 %}
+                <img src="{{ url_for('static', filename='images/badges/rank_3.png') }}" alt="Rank 3" style="width: 32px; height: 32px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(205, 127, 50, 0.4));" />
+              {% elif user_standing.rank != '--' %}
+                <span style="color: var(--text-muted); font-size: 0.85rem;">#{{ user_standing.rank }}</span>
+              {% else %}
+                <span style="color: var(--text-muted);">--</span>
+              {% endif %}
+            </td>
+            <td style="padding: 0.75rem 1rem; color: var(--text-muted);">#{{ u.id }}</td>
+            <td style="padding: 0.75rem 1rem; font-weight: 700; color: #fff;">{{ u.username }}</td>
+            <td style="padding: 0.75rem 1rem; color: var(--text-secondary);">{{ u.email }}</td>
+            <td style="padding: 0.75rem 1rem;">
+              <span class="role-badge role-{{ u.role }}">{{ u.role }}</span>
+            </td>
+            <td style="padding: 0.75rem 1rem; text-align: center; color: var(--neon-green-bright); font-weight: bold;">
+              {{ u.score.challenges_solved if u.score else 0 }} / 6
+            </td>
+            <td style="padding: 0.75rem 1rem; text-align: center; color: var(--cyan);">
+              {% if user_standing.completed %}
+                {{ user_standing.time }}
+              {% elif user_standing.time != '--' %}
+                {{ user_standing.time }}
+              {% else %}
+                <span style="color: var(--text-muted);">--</span>
+              {% endif %}
+            </td>
+            <td style="padding: 0.75rem 1rem; text-align: right; font-weight: 800; color: var(--neon-green-bright);">
+              {{ u.score.total_score if u.score else 0 }} PTS
+            </td>
+            <td style="padding: 0.75rem 1rem; text-align: right; color: var(--text-muted); font-size: 0.8rem;">
+              {{ u.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 2: Recent Submissions Feed -->
+  <div class="stages-header" style="margin-top: 2.5rem;">
+    <div>
+      <h2 class="stages-title" style="font-size: 1.35rem;">Live Flag Submission Feed</h2>
+      <p class="stages-subtitle">Real-time incoming flag attempts across all challenge stages</p>
+    </div>
+  </div>
+
+  <div class="auth-card" style="max-width: 100%; padding: 1.25rem; margin-top: 0.75rem;">
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; font-family: var(--font-mono);">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted); text-align: left;">
+            <th style="padding: 0.75rem 1rem;">ID</th>
+            <th style="padding: 0.75rem 1rem;">STAGE</th>
+            <th style="padding: 0.75rem 1rem;">OPERATIVE</th>
+            <th style="padding: 0.75rem 1rem;">RESULT</th>
+            <th style="padding: 0.75rem 1rem;">SCORE</th>
+            <th style="padding: 0.75rem 1rem;">SUBMITTED AT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sub in recent_submissions %}
+          <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <td style="padding: 0.75rem 1rem; color: var(--text-muted);">#{{ sub.id }}</td>
+            <td style="padding: 0.75rem 1rem; color: var(--copper-light); font-weight: 700;">
+              Stage {{ sub.challenge.stage_number if sub.challenge else '?' }}: {{ sub.challenge.title if sub.challenge else 'Unknown' }}
+            </td>
+            <td style="padding: 0.75rem 1rem; color: #fff; font-weight: 600;">
+              {{ sub.user.username if sub.user else ('User #' ~ sub.user_id) }}
+            </td>
+            <td style="padding: 0.75rem 1rem;">
+              {% if sub.success %}
+                <span class="role-badge role-player" style="background: rgba(57, 255, 20, 0.2); color: var(--neon-green-bright); border: 1px solid var(--neon-green);">CLEARANCE GRANTED</span>
+              {% else %}
+                <span class="role-badge role-admin" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">REJECTED</span>
+              {% endif %}
+            </td>
+            <td style="padding: 0.75rem 1rem; font-weight: 700; color: var(--neon-green-bright);">
+              +{{ sub.score_awarded }} PTS
+            </td>
+            <td style="padding: 0.75rem 1rem; color: var(--text-muted); font-size: 0.8rem;">
+              {{ sub.submitted_at.strftime('%Y-%m-%d %H:%M:%S') }}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No flag submissions recorded yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 3: Security & Anti-Cheat Telemetry Log -->
+  <div class="stages-header" style="margin-top: 2.5rem;">
+    <div>
+      <h2 class="stages-title" style="font-size: 1.35rem;">Security &amp; Anti-Cheat Telemetry Log</h2>
+      <p class="stages-subtitle">Live system event trail, authentication records, AI canary triggers, and rate-limit violations</p>
+    </div>
+  </div>
+
+  <div class="auth-card" style="max-width: 100%; padding: 1.25rem; margin-top: 0.75rem; margin-bottom: 3rem;">
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem; font-family: var(--font-mono);">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-muted); text-align: left;">
+            <th style="padding: 0.75rem 1rem;">ID</th>
+            <th style="padding: 0.75rem 1rem;">TIMESTAMP</th>
+            <th style="padding: 0.75rem 1rem;">USER</th>
+            <th style="padding: 0.75rem 1rem;">EVENT TYPE</th>
+            <th style="padding: 0.75rem 1rem;">AUDIT DETAILS</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in recent_logs %}
+          <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
+            <td style="padding: 0.75rem 1rem; color: var(--text-muted);">#{{ log.id }}</td>
+            <td style="padding: 0.75rem 1rem; color: var(--text-secondary); white-space: nowrap;">{{ log.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td style="padding: 0.75rem 1rem; color: var(--copper-light); font-weight: 600;">
+              {{ log.user.username if log.user else (('User #' ~ log.user_id) if log.user_id else 'SYSTEM') }}
+            </td>
+            <td style="padding: 0.75rem 1rem; white-space: nowrap;">
+              {% if 'canary' in log.event_type or 'rate_limit' in log.event_type %}
+                <span class="role-badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;">{{ log.event_type }}</span>
+              {% elif 'success' in log.event_type or 'solved' in log.event_type %}
+                <span class="role-badge" style="background: rgba(57, 255, 20, 0.15); color: var(--neon-green-bright); border: 1px solid var(--neon-green);">{{ log.event_type }}</span>
+              {% else %}
+                <span class="role-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);">{{ log.event_type }}</span>
+              {% endif %}
+            </td>
+            <td style="padding: 0.75rem 1rem; color: var(--text-primary);">{{ log.message }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">No security events recorded yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

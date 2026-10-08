@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}CyberBank: Operation BlackVault Completed{% endblock %}
+
+{% block content %}
+<div class="dashboard-container" style="max-width: 900px; margin: 0 auto; padding-top: 2rem; padding-bottom: 4rem;">
+
+  <!-- Hero Completion Banner -->
+  <div style="background: linear-gradient(145deg, rgba(10, 14, 20, 0.95), rgba(0, 255, 102, 0.08)); border: 2px solid var(--neon-green-bright); border-radius: 14px; padding: 2.5rem; text-align: center; box-shadow: 0 0 40px rgba(0, 255, 102, 0.15); margin-bottom: 2rem;">
+    
+    <div style="display: inline-block; padding: 0.4rem 1rem; border-radius: 20px; background: rgba(0, 255, 102, 0.15); border: 1px solid var(--neon-green-bright); color: var(--neon-green-bright); font-family: var(--font-mono); font-size: 0.85rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 1rem;">
+      &#9733; OPERATION STATUS: COMPLETED &#9733;
+    </div>
+
+    <h1 style="font-size: 2.4rem; font-weight: 900; color: #ffffff; margin: 0.5rem 0 1rem; letter-spacing: -0.5px;">
+      OPERATION BLACKVAULT COMPLETED
+    </h1>
+
+    <p style="color: var(--text-secondary); max-width: 650px; margin: 0 auto 2rem; font-size: 1.05rem; line-height: 1.6;">
+      Commendations, Operative <strong style="color: var(--copper-light);">{{ current_user.username }}</strong>. You have systematically penetrated all perimeter layers, unraveled internal communications, breached the high-security banking ledger, and escalated to root control over the central BlackVault infrastructure.
+    </p>
+
+    <!-- Telemetry Badges -->
+    <div style="display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem;">
+      <div style="background: rgba(6, 8, 11, 0.85); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1rem 1.5rem; min-width: 160px;">
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">FINAL SCORE</div>
+        <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 900; color: var(--neon-green-bright);">
+          {{ total_score }} <span style="font-size: 0.85rem; color: var(--text-muted);">/ 1000</span>
+        </div>
+      </div>
+
+      <div style="background: rgba(6, 8, 11, 0.85); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1rem 1.5rem; min-width: 160px;">
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">STAGES SOLVED</div>
+        <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 900; color: #ffffff;">
+          6 / 6
+        </div>
+      </div>
+
+      <div style="background: rgba(6, 8, 11, 0.85); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1rem 1.5rem; min-width: 160px;">
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">HINTS USED</div>
+        <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 900; color: var(--copper-light);">
+          {{ hints_used }} <span style="font-size: 0.85rem; color: var(--text-muted);">/ 18</span>
+        </div>
+      </div>
+
+      <div style="background: rgba(6, 8, 11, 0.85); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1rem 1.5rem; min-width: 160px;">
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">CLEARANCE LEVEL</div>
+        <div style="font-family: var(--font-mono); font-size: 1.75rem; font-weight: 900; color: var(--neon-green-bright);">
+          ROOT
+        </div>
+      </div>
+
+      {% if user_time_taken %}
+      <div style="background: rgba(6, 8, 11, 0.85); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1rem 1.5rem; min-width: 160px;">
+        <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">TOTAL TIME TAKEN</div>
+        <div style="font-family: var(--font-mono); font-size: 1.5rem; font-weight: 900; color: var(--cyan);">
+          {{ user_time_taken }}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Timestamp Info -->
+    <div style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-muted);">
+      COMPLETION TIMESTAMP (UTC): <span style="color: var(--copper-light);">{{ completion_time }}</span>
+    </div>
+  </div>
+
+  <!-- Stage Breakdown Audit Matrix -->
+  <div style="background: rgba(10, 14, 20, 0.85); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+    <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+      <span>OPERATION MISSION MATRIX SUMMARY</span>
+      <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--neon-green-bright);">100% SUCCESS RATE</span>
+    </h3>
+
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      {% for stage in stages_summary %}
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(6, 8, 11, 0.6); padding: 0.85rem 1.25rem; border-radius: 6px; border: 1px solid rgba(200, 122, 72, 0.2);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 900; color: var(--copper-light);">STAGE 0{{ stage.stage_number }}</span>
+            <span style="color: #ffffff; font-weight: 700; font-size: 0.95rem;">{{ stage.title }}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">{{ stage.domain }}</span>
+            <span style="font-family: var(--font-mono); font-weight: 800; font-size: 0.85rem; color: var(--neon-green-bright);">+{{ stage.points }} PTS</span>
+            <span style="color: var(--neon-green-bright); font-size: 0.85rem; font-weight: 900;">&#10003; BREACHED</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Live Leaderboard Standings -->
+  <div style="margin-bottom: 2rem;">
+    {% include "scoreboard_table.html" %}
+  </div>
+
+  <!-- Actions -->
+  <div style="display: flex; justify-content: center; gap: 1rem;">
+    <a href="{{ url_for('dashboard.dashboard_view') }}" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+      &larr; Return to Mission Dashboard
+    </a>
+  </div>
+
+</div>
+{% endblock %}

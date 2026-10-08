@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block title %}Stage 0{{ challenge.stage_number }}: {{ challenge.title }} | CyberBank CTF{% endblock %}
+
+{% block content %}
+<div class="dashboard-container" style="max-width: 920px; margin: 2rem auto;">
+  <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <a href="{{ url_for('dashboard.dashboard_view') }}" class="btn btn-outline btn-sm">
+      &larr; Return to Mission Matrix
+    </a>
+    {% if current_user.created_at %}
+    <div style="display: flex; align-items: center; gap: 0.65rem; background: rgba(10, 14, 20, 0.85); border: 1px solid var(--border-copper); border-radius: 8px; padding: 0.35rem 0.85rem; font-family: var(--font-mono); font-size: 0.82rem;">
+      <span style="color: var(--text-muted); font-weight: 700;">TIME REMAINING (2H LIMIT):</span>
+      <span id="challengeMissionTimer" style="color: var(--cyan); font-weight: 800; font-size: 0.95rem;">02:00:00</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="hud-panel" style="padding: 2.25rem;">
+    <!-- Stage Header Meta -->
+    <div class="stage-top" style="margin-bottom: 1.5rem;">
+      <div class="stage-meta" style="gap: 0.75rem;">
+        <span class="stage-number" style="font-size: 0.9rem;">STAGE 0{{ challenge.stage_number }}</span>
+        <span class="domain-tag domain-{{ challenge.domain }}" style="font-size: 0.8rem; padding: 0.3rem 0.7rem;">{{ challenge.domain|upper }}</span>
+        <span class="difficulty-pill diff-{{ challenge.difficulty }}" style="font-size: 0.78rem;">{{ challenge.difficulty|upper }}</span>
+      </div>
+
+      <span class="badge-status status-{{ challenge.status }}">
+        {{ challenge.status|upper }}
+      </span>
+    </div>
+
+    <h1 class="stage-title" style="font-size: 2.1rem; margin-bottom: 1rem;">{{ challenge.title }}</h1>
+    
+    <p class="stage-desc" style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.5rem;">
+      {{ challenge.description }}
+    </p>
+
+    {% if challenge.objective %}
+      <div class="stage-objective" style="font-size: 0.95rem; padding: 0.85rem 1.25rem; margin-bottom: 1.75rem;">
+        <strong style="color: var(--copper-light);">MISSION OBJECTIVE:</strong> {{ challenge.objective }}
+      </div>
+    {% endif %}
+
+    <!-- Investigation Artifacts & Downloads -->
+    {% if challenge.stage_number == 1 %}
+      <div style="background: rgba(10, 14, 20, 0.9); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 1rem; font-weight: 800; color: #ffffff; margin-bottom: 0.25rem;">
+              EVIDENCE DOSSIER: <span style="color: var(--neon-green-bright); font-family: var(--font-mono);">STAGE1_INTEL_DOSSIER.ZIP</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+              Includes employee roster, commit logs, chat exports, and leaked environment dumps.
+            </div>
+          </div>
+          <a href="{{ url_for('static', filename='downloads/stage1_digital_footprint_dossier.zip') }}" class="btn btn-copper btn-sm" download style="padding: 0.6rem 1.2rem;">
+            Download Intelligence Package (.ZIP) &darr;
+          </a>
+        </div>
+
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-secondary);">
+          <div><strong style="color: var(--copper-light);">ANALYSIS TOOLS:</strong> grep, strings, jq, VS Code, Python</div>
+          <div><strong style="color: var(--copper-light);">TARGET IDENTIFIER:</strong> Lead Infrastructure Engineer</div>
+        </div>
+      </div>
+    {% elif challenge.stage_number == 2 %}
+      <div style="background: rgba(10, 14, 20, 0.9); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 1rem; font-weight: 800; color: #ffffff; margin-bottom: 0.25rem;">
+              EVIDENCE ASSET: <span style="color: var(--neon-green-bright); font-family: var(--font-mono);">CYBERBANK_PROMO_ASSET.PNG</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+              Promotional marketing image carrier suspected of containing polyglot steganographic data.
+            </div>
+          </div>
+          <a href="{{ url_for('static', filename='downloads/cyberbank_promo_asset.png') }}" class="btn btn-copper btn-sm" download style="padding: 0.6rem 1.2rem;">
+            Download Stego Media (.PNG) &darr;
+          </a>
+        </div>
+
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-secondary);">
+          <div><strong style="color: var(--copper-light);">ANALYSIS TOOLS:</strong> exiftool, binwalk, strings, 7z, unzip</div>
+          <div><strong style="color: var(--copper-light);">CARRIER TYPE:</strong> PNG Polyglot Archive</div>
+        </div>
+    {% elif challenge.stage_number == 3 %}
+      <div style="background: rgba(10, 14, 20, 0.9); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 1rem; font-weight: 800; color: #ffffff; margin-bottom: 0.25rem;">
+              TARGET SERVICE: <span style="color: var(--neon-green-bright); font-family: var(--font-mono);">HTTP://LOCALHOST:8080</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+              Simulated CyberBank Online Banking Portal. Provisioned testing account: <code style="color: var(--copper-light);">customer_user</code> / <code style="color: var(--copper-light);">Password123!</code>
+            </div>
+          </div>
+          <a href="http://localhost:8080" target="_blank" class="btn btn-copper btn-sm" style="padding: 0.6rem 1.2rem;">
+            Open Banking Portal &rarr;
+          </a>
+        </div>
+
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-secondary);">
+          <div><strong style="color: var(--copper-light);">VULNERABILITY:</strong> Insecure Direct Object Reference (IDOR)</div>
+          <div><strong style="color: var(--copper-light);">TARGET:</strong> Account Ledger #7721 (BlackVault Reserve)</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Stage 04: Cryptography Evidence Download -->
+    {% if challenge.stage_number == 4 %}
+      <div style="background: rgba(10, 14, 20, 0.9); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 1rem; font-weight: 800; color: #ffffff; margin-bottom: 0.25rem;">
+              EVIDENCE INTERCEPT: <span style="color: var(--neon-green-bright); font-family: var(--font-mono);">STAGE04_BANKER_MESSAGE.TXT</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+              Encoded communication fragment recovered from Director-level VPN tunnel. Multiple transformation layers detected.
+            </div>
+          </div>
+          <a href="{{ url_for('static', filename='downloads/stage04_banker_message.txt') }}" class="btn btn-copper btn-sm" download style="padding: 0.6rem 1.2rem;">
+            Download Intercept (.TXT) &darr;
+          </a>
+        </div>
+
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-secondary);">
+          <div><strong style="color: var(--copper-light);">ANALYSIS TOOLS:</strong> CyberChef, Python, OpenSSL, Linux CLI</div>
+          <div><strong style="color: var(--copper-light);">DOMAIN:</strong> Cryptographic Intercept Analysis</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Stage 05: Digital Forensics Evidence Download -->
+    {% if challenge.stage_number == 5 %}
+      <div style="background: rgba(10, 14, 20, 0.9); border: 1px solid var(--border-copper); border-radius: 10px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 1rem; font-weight: 800; color: #ffffff; margin-bottom: 0.25rem;">
+              FORENSIC EVIDENCE PACKAGE: <span style="color: var(--neon-green-bright); font-family: var(--font-mono);">STAGE05_EVIDENCE.ZIP</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-mono);">
+              Digital artefacts seized from workstation WS-INVEST-SEC04 (auth.log, web_access.log, application.log, network_capture.pcap, suspicious_note.txt, metadata.txt).
+            </div>
+          </div>
+          <a href="{{ url_for('static', filename='downloads/stage05_evidence.zip') }}" class="btn btn-copper btn-sm" download style="padding: 0.6rem 1.2rem;">
+            Download Evidence Package (.ZIP) &darr;
+          </a>
+        </div>
+
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-secondary);">
+          <div><strong style="color: var(--copper-light);">REQUIRED TOOLS:</strong> Wireshark, grep, strings, awk, file, Linux CLI</div>
+          <div><strong style="color: var(--copper-light);">DOMAIN:</strong> Digital Forensics &amp; Timeline Reconstruction</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Stage 06: Linux System Security / BlackVault Server -->
+    {% if challenge.stage_number == 6 %}
+      <div style="background: rgba(10, 14, 20, 0.95); border: 1px solid var(--border-copper); border-radius: 12px; padding: 1.75rem; margin-bottom: 2rem; box-shadow: 0 0 25px rgba(200, 122, 72, 0.15);">
+        <!-- Node Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(200, 122, 72, 0.25);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem;">
+              <span style="background: rgba(0, 255, 102, 0.12); color: var(--neon-green-bright); border: 1px solid var(--neon-green-bright); font-size: 0.72rem; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 4px; font-family: var(--font-mono); letter-spacing: 0.05em;">
+                SECURE NODE // BV-SEC-CORE-01
+              </span>
+              <span style="background: rgba(200, 122, 72, 0.15); color: var(--copper-light); border: 1px solid var(--border-copper); font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; font-family: var(--font-mono);">
+                LEVEL 5 AUDIT CLEARANCE
+              </span>
+            </div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: #ffffff; margin: 0; font-family: var(--font-heading); letter-spacing: 0.04em;">
+              CYBERBANK: BLACKVAULT SERVER [PORT 2222]
+            </h2>
+            <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 0.25rem;">
+              CLASSIFICATION: RESTRICTED ACCESS // AIR-GAPPED INTERNAL INFRASTRUCTURE
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--neon-green-bright); box-shadow: 0 0 8px var(--neon-green-bright);"></span>
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--neon-green-bright); font-family: var(--font-mono);">
+              STATUS: OPERATIONAL (PORT 2222)
+            </span>
+          </div>
+        </div>
+
+        <!-- Connection Credentials Bar -->
+        <div style="background: rgba(5, 7, 12, 0.7); border: 1px solid rgba(200, 122, 72, 0.2); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <div style="font-size: 0.85rem; font-weight: 800; color: var(--copper-light); text-transform: uppercase; margin-bottom: 0.35rem; font-family: var(--font-mono);">
+                <span>[+]</span> Provisioned Auditor Profile:
+              </div>
+              <div style="font-size: 0.85rem; font-family: var(--font-mono); color: #cbd5e1;">
+                User: <code style="color: #f59e0b; background: rgba(0,0,0,0.5); padding: 0.15rem 0.5rem; border-radius: 3px; font-weight: bold;">analyst</code>
+                &nbsp;|&nbsp;
+                Password: <code style="color: #f59e0b; background: rgba(0,0,0,0.5); padding: 0.15rem 0.5rem; border-radius: 3px; font-weight: bold;">BlackVault2026!</code>
+                &nbsp;|&nbsp;
+                Port: <code style="color: var(--neon-green-bright); font-weight: bold;">2222 (SSH)</code>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; align-items: center; min-width: 320px;">
+              <input id="sshCmdInput" type="text" readonly value="ssh analyst@localhost -p 2222" style="flex: 1; background: #020408; border: 1px solid var(--border-copper); color: var(--neon-green-bright); font-family: var(--font-mono); font-size: 0.82rem; padding: 0.5rem 0.75rem; border-radius: 4px;" />
+              <button type="button" class="btn btn-outline btn-sm" onclick="copySshCommand()" id="copySshBtn" style="padding: 0.5rem 0.9rem; font-size: 0.8rem; white-space: nowrap;">
+                Copy Command
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TACTICAL MISSION DIRECTIVE (Concise idea for participants) -->
+        <div style="background: rgba(5, 7, 12, 0.75); border: 1px solid rgba(200, 122, 72, 0.25); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem;">
+          <div style="font-size: 0.88rem; font-weight: 800; color: var(--copper-light); text-transform: uppercase; margin-bottom: 0.75rem; font-family: var(--font-mono); display: flex; align-items: center; gap: 0.5rem; letter-spacing: 0.05em; border-bottom: 1px dashed rgba(200, 122, 72, 0.25); padding-bottom: 0.5rem;">
+            <span style="color: var(--neon-green-bright);">&gt;</span> MISSION BRIEFING &amp; OBJECTIVE
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 0.84rem; color: #cbd5e1; line-height: 1.6;">
+            <p style="margin: 0 0 0.75rem 0; color: var(--text-secondary);">
+              You are provisioned with low-privilege auditor access (<code style="color: #f59e0b;">analyst</code>) on BlackVault. Perform system enumeration to uncover a privilege escalation flaw and capture the master flag:
+            </p>
+            <ul style="margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.45rem; color: #94a3b8;">
+              <li><strong style="color: #ffffff;">Initial Access:</strong> SSH into the server on port <code style="color: var(--neon-green-bright);">2222</code> using the provisioned auditor credentials above.</li>
+              <li><strong style="color: #ffffff;">System Audit:</strong> Enumerate user privileges, groups, and permitted sudo commands (<code style="color: var(--cyan);">sudo -l</code>).</li>
+              <li><strong style="color: #ffffff;">Permission Inspection:</strong> Analyze accessible maintenance scripts and inspect permissions of all sourced configuration files.</li>
+              <li><strong style="color: #ffffff;">Privilege Escalation:</strong> Exploit the discovered file permission weakness to elevate permissions to <strong style="color: var(--neon-green-bright);">root</strong>.</li>
+              <li><strong style="color: #ffffff;">Master Flag:</strong> Locate and read the protected clearance flag in <code style="color: var(--neon-green-bright);">/root/blackvault_flag.txt</code> and submit it below!</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tooling and Domain Footer -->
+        <div style="padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-secondary);">
+          <div><strong style="color: var(--copper-light);">SSH CONNECTION:</strong> <code style="color: var(--neon-green-bright);">ssh analyst@localhost -p 2222</code></div>
+          <div><strong style="color: var(--copper-light);">REQUIRED TOOLS:</strong> OpenSSH Client, Linux CLI, find, sudo, ls, grep, cat</div>
+          <div><strong style="color: var(--copper-light);">DOMAIN:</strong> Linux / System Security &amp; Privilege Escalation</div>
+          <div><strong style="color: var(--copper-light);">FINAL OBJECTIVE:</strong> Retrieve <code style="color: var(--neon-green-bright);">/root/blackvault_flag.txt</code> (+300 PTS)</div>
+        </div>
+      </div>
+
+      <script>
+        function copySshCommand() {
+          const input = document.getElementById('sshCmdInput');
+          if (!input) return;
+          navigator.clipboard.writeText(input.value).then(() => {
+            const btn = document.getElementById('copySshBtn');
+            if (btn) {
+              const orig = btn.textContent;
+              btn.textContent = 'Copied!';
+              btn.style.borderColor = 'var(--neon-green-bright)';
+              btn.style.color = 'var(--neon-green-bright)';
+              setTimeout(() => {
+                btn.textContent = orig;
+                btn.style.borderColor = '';
+                btn.style.color = '';
+              }, 2000);
+            }
+          }).catch(() => {
+            input.select();
+            document.execCommand('copy');
+          });
+        }
+      </script>
+    {% endif %}
+
+    <!-- Three-Level Progressive Tactical Intelligence (Hints) -->
+    <div style="margin: 2rem 0; border-top: 1px solid var(--border-copper); padding-top: 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; text-transform: uppercase;">
+          Tactical Intelligence Decryption (Hints)
+        </h3>
+        <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted);">
+          Max cumulative penalty: -60%
+        </span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+        {% for hint in hints %}
+          <div class="hint-card" style="background: rgba(6, 8, 11, 0.85); border: 1px solid var(--border-copper); border-radius: 8px; padding: 1rem 1.25rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span style="font-family: var(--font-mono); font-weight: 900; font-size: 0.85rem; color: var(--copper-light);">HINT 0{{ hint.hint_number }}</span>
+                <span class="role-badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4);">
+                  -{{ hint.penalty_percentage }}% SCORE PENALTY
+                </span>
+              </div>
+
+              {% if hint.is_unlocked %}
+                <span style="color: var(--neon-green-bright); font-family: var(--font-mono); font-size: 0.78rem; font-weight: 800;">DECRYPTED</span>
+              {% elif hint.can_unlock %}
+                <button type="button" class="btn btn-copper btn-sm" onclick="unlockHintAjax({{ challenge.id }}, {{ hint.hint_number }}, this)">
+                  Unlock Hint (-{{ hint.penalty_percentage }}%)
+                </button>
+              {% else %}
+                <span style="color: var(--text-muted); font-family: var(--font-mono); font-size: 0.78rem;">
+                  LOCKED (Requires Hint 0{{ hint.hint_number - 1 }})
+                </span>
+              {% endif %}
+            </div>
+
+            {% if hint.is_unlocked %}
+              <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed rgba(200, 122, 72, 0.3); font-size: 0.92rem; color: var(--text-primary); font-family: var(--font-mono); line-height: 1.5;">
+                &gt; {{ hint.hint_text }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Flag Submission Footer -->
+    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-copper); padding-top: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+      <div class="points-tag" style="font-size: 1.2rem;">
+        BASE VALUE: +{{ challenge.points }} PTS
+      </div>
+
+      {% if challenge.status == 'completed' %}
+        <div style="color: var(--neon-green-bright); font-weight: 800; font-family: var(--font-mono); font-size: 1rem;">
+          SOLVED &amp; POINTS RECORDED
+        </div>
+      {% else %}
+        <form method="POST" action="{{ url_for('submission.submit_flag', challenge_id=challenge.id) }}" style="display: flex; gap: 0.5rem; min-width: 340px;">
+          <input 
+            type="text" 
+            name="flag" 
+            class="form-input" 
+            placeholder="CBANK{...}" 
+            required 
+            autocomplete="off"
+            style="font-family: var(--font-mono);"
+          >
+          <button type="submit" class="btn btn-primary">Submit Flag</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function unlockHintAjax(chalId, hintNum, btn) {
+    if (!confirm('Unlocking Hint 0' + hintNum + ' will apply a penalty to your score upon solve. Confirm tactical decrypt?')) {
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Decrypting...';
+
+    fetch('/challenges/' + chalId + '/hints/' + hintNum + '/unlock', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'success') {
+        window.location.reload();
+      } else {
+        alert(data.message || 'Error unlocking hint.');
+        btn.disabled = false;
+        btn.textContent = 'Unlock Hint';
+      }
+    })
+    .catch(err => {
+      alert('Network communication failure.');
+      btn.disabled = false;
+    });
+  }
+
+  // Live 2-Hour Countdown Timer (Counting Backward)
+  (function() {
+    const TOTAL_MISSION_SECONDS = 7200; // 2 hours
+    const startTime = new Date("{{ current_user.created_at.strftime('%Y-%m-%dT%H:%M:%SZ') }}").getTime();
+    const endTime = startTime + (TOTAL_MISSION_SECONDS * 1000);
+    const timerEl = document.getElementById("challengeMissionTimer");
+    if (!timerEl) return;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diffMs = endTime - now;
+      const remainingSec = Math.max(0, Math.floor(diffMs / 1000));
+
+      const hours = Math.floor(remainingSec / 3600);
+      const minutes = Math.floor((remainingSec % 3600) / 60);
+      const seconds = remainingSec % 60;
+
+      if (remainingSec <= 0) {
+        timerEl.textContent = "00:00:00 (EXPIRED)";
+        timerEl.style.color = "#ef4444";
+      } else {
+        timerEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        if (remainingSec <= 600) {
+          timerEl.style.color = "#ef4444";
+        } else if (remainingSec <= 1800) {
+          timerEl.style.color = "#f59e0b";
+        } else {
+          timerEl.style.color = "var(--cyan)";
+        }
+      }
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  })();
+</script>
+{% endblock %}
