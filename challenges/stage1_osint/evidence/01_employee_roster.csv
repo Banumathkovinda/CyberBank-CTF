@@ -1,0 +1,9 @@
+employee_id,first_name,last_name,department,role,email,github_handle,security_clearance
+CB-1001,Elena,Rostova,Executive,Chief Executive Officer,e.rostova@cyberbank-internal.net,erostova_exec,Level-5
+CB-2044,Marcus,Vance,Security,Lead Threat Analyst,m.vance@cyberbank-internal.net,m_vance_sec,Level-4
+CB-3190,Claire,Aldridge,Operations,Director of Core Banking,c.aldridge@cyberbank-internal.net,c_aldridge_ops,Level-3
+CB-4412,Tariq,Mansoor,DevOps,Site Reliability Engineer,t.mansoor@cyberbank-internal.net,tmansoor_sre,Level-3
+CB-8821,Jonathan,Mercer,Core Infrastructure,Lead Systems Architect,j.mercer@cyberbank-internal.net,j_banker_dev,Level-4
+CB-5519,Rachel,Sterling,Compliance,Chief Risk Officer,r.sterling@cyberbank-internal.net,rsterling_risk,Level-3
+CB-6620,David,Kaufman,Security,SOC Incident Responder,d.kaufman@cyberbank-internal.net,dkaufman_soc,Level-2
+CB-7731,Anita,Deshmukh,Core Infrastructure,Database Administrator,a.deshmukh@cyberbank-internal.net,adeshmukh_db,Level-3

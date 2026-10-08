@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Account Details #{{ account.account_id }} | CyberBank{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1rem;">
+  <a href="{{ url_for('dashboard') }}" style="color: var(--bank-accent); text-decoration: none; font-size: 0.88rem;">&larr; Back to Accounts Overview</a>
+</div>
+
+<div class="bank-card">
+  <div class="bank-card-title">
+    <span>Account Summary #{{ account.account_id }}</span>
+    <span class="badge badge-credit">{{ account.status }}</span>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+    <div>
+      <div style="font-size: 0.8rem; color: var(--bank-text-muted); text-transform: uppercase;">Account Holder</div>
+      <div style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-top: 0.25rem;">{{ account.owner_name }}</div>
+    </div>
+    <div>
+      <div style="font-size: 0.8rem; color: var(--bank-text-muted); text-transform: uppercase;">Account Number &amp; Type</div>
+      <div style="font-size: 1.1rem; font-weight: 700; font-family: monospace; color: var(--bank-accent); margin-top: 0.25rem;">{{ account.account_number }}</div>
+      <div style="font-size: 0.85rem; color: var(--bank-text-muted);">{{ account.account_type }}</div>
+    </div>
+    <div>
+      <div style="font-size: 0.8rem; color: var(--bank-text-muted); text-transform: uppercase;">Current Balance</div>
+      <div style="font-size: 1.25rem; font-weight: 900; color: var(--bank-green); margin-top: 0.25rem;">${{ "{:,.2f}".format(account.balance) }} {{ account.currency }}</div>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 1rem;">
+    <a href="{{ url_for('transactions_view', account_id=account.account_id) }}" class="btn btn-primary">
+      Inspect Transaction History &rarr;
+    </a>
+  </div>
+</div>
+{% endblock %}

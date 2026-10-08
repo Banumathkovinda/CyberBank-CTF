@@ -1,0 +1,26 @@
+{
+  "channel": "#core-infra-migration",
+  "export_date": "2026-07-18T10:00:00Z",
+  "messages": [
+    {
+      "timestamp": "2026-07-15T22:15:30Z",
+      "sender": "tmansoor_sre",
+      "text": "Hey @j_banker_dev, are the BlackVault staging environment variables ready for deployment testing?"
+    },
+    {
+      "timestamp": "2026-07-15T22:18:12Z",
+      "sender": "j_banker_dev",
+      "text": "Yes, I dropped a quick debug export on the internal scratch pad. Make sure to check the BK-9821-DUMP note before I scrub it."
+    },
+    {
+      "timestamp": "2026-07-16T02:10:05Z",
+      "sender": "m_vance_sec",
+      "text": "@j_banker_dev Jonathan please sanitize that dump ASAP - it contains sensitive clearance tokens."
+    },
+    {
+      "timestamp": "2026-07-16T02:15:00Z",
+      "sender": "j_banker_dev",
+      "text": "Done! Scrubbed from Git in commit 7f8a92d1. Archived old logs into evidence file 04."
+    }
+  ]
+}

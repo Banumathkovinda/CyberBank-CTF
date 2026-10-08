@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Account Overview | CyberBank Online Banking{% endblock %}
+
+{% block content %}
+<div class="bank-card">
+  <div class="bank-card-title">
+    <span>Welcome, {{ session.get('full_name') }}</span>
+    <span style="font-size: 0.8rem; font-weight: normal; color: var(--bank-text-muted);">Role: {{ session.get('role')|upper }}</span>
+  </div>
+
+  <p style="color: var(--bank-text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+    Your linked accounts and liquidity portfolios are listed below. Click an account to inspect statement history.
+  </p>
+
+  <table class="bank-table">
+    <thead>
+      <tr>
+        <th>Account ID</th>
+        <th>Account Number</th>
+        <th>Product Type</th>
+        <th>Available Balance</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for acc in accounts %}
+        <tr>
+          <td style="font-family: monospace; font-weight: bold; color: var(--bank-accent);">#{{ acc.account_id }}</td>
+          <td style="font-family: monospace;">{{ acc.account_number }}</td>
+          <td>{{ acc.account_type }}</td>
+          <td style="font-weight: bold; color: var(--bank-green);">${{ "{:,.2f}".format(acc.balance) }} {{ acc.currency }}</td>
+          <td><span class="badge badge-credit">{{ acc.status }}</span></td>
+          <td>
+            <a href="{{ url_for('transactions_view', account_id=acc.account_id) }}" class="btn btn-sm btn-primary">
+              View Statement &rarr;
+            </a>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="6" style="text-align: center; color: var(--bank-text-muted);">No linked accounts found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+================================================================================
+PASTE ARTIFACT: #BK-9821-DUMP
+TITLE: Staging Environment Debug Configuration
+AUTHOR: Jonathan Mercer (j_banker_dev / CB-8821)
+TIMESTAMP: 2026-07-15T22:12:00Z
+CLASSIFICATION: RESTRICTED INTERNAL
+================================================================================
+
+# CyberBank Core Infrastructure - Staging Environment
+CLUSTER_ID=CB-BLACKVAULT-STAGING-01
+GATEWAY_HOST=vpn.cyberbank-internal.net
+GATEWAY_PORT=8443
+SWIFT_MQ_SERVER=10.240.12.8
+SWIFT_MQ_PORT=5672
+
+# Database Connection Parameters
+DB_ENGINE=mysql+pymysql
+DB_HOST=10.240.10.5
+DB_PORT=3306
+DB_NAME=cyberbank_staging
+DB_USER=cb_stage_app
+
+# Security Clearance Access Token (DO NOT COMMIT TO PUBLIC VCS)
+BLACKVAULT_STAGE1_CLEARANCE_KEY=CBANK{OSINT_f00tpr1nt_d1g1t4l_9821}
+
+# Debug & Telemetry Flags
+ENABLE_VERBOSE_TRACING=true
+ALLOW_ANONYMOUS_METRICS=false
+SESSION_TIMEOUT_SECONDS=3600
+================================================================================

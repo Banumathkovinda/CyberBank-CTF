@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction Ledger #{{ account.account_id }} | CyberBank{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 1rem;">
+  <a href="{{ url_for('dashboard') }}" style="color: var(--bank-accent); text-decoration: none; font-size: 0.88rem;">&larr; Back to Accounts Overview</a>
+</div>
+
+<div class="bank-card">
+  <div class="bank-card-title">
+    <div>
+      <span>Statement Ledger: Account #{{ account.account_id }}</span>
+      <div style="font-size: 0.82rem; color: var(--bank-text-muted); font-weight: normal; margin-top: 0.2rem;">
+        Owner: <strong>{{ account.owner_name }}</strong> ({{ account.account_number }} &bull; {{ account.account_type }})
+      </div>
+    </div>
+    <div style="text-align: right;">
+      <div style="font-size: 0.75rem; color: var(--bank-text-muted);">STATEMENT BALANCE</div>
+      <div style="font-size: 1.2rem; font-weight: 900; color: var(--bank-green); font-family: monospace;">${{ "{:,.2f}".format(account.balance) }}</div>
+    </div>
+  </div>
+
+  <table class="bank-table">
+    <thead>
+      <tr>
+        <th>Tx Code</th>
+        <th>Timestamp</th>
+        <th>Description &amp; Audit Notes</th>
+        <th>Type</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tx in transactions %}
+        <tr>
+          <td style="font-family: monospace; font-weight: bold; color: var(--bank-accent);">{{ tx.tx_code }}</td>
+          <td style="font-family: monospace; font-size: 0.85rem; color: var(--bank-text-muted);">{{ tx.timestamp }}</td>
+          <td>
+            <div style="font-weight: 600; color: #fff;">{{ tx.description }}</div>
+            {% if tx.notes %}
+              <div style="font-size: 0.8rem; color: var(--bank-text-muted); font-family: monospace; margin-top: 0.2rem; background: rgba(0,0,0,0.3); padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block;">
+                {{ tx.notes }}
+              </div>
+            {% endif %}
+          </td>
+          <td>
+            {% if tx.tx_type == 'CREDIT' %}
+              <span class="badge badge-credit">CREDIT</span>
+            {% else %}
+              <span class="badge badge-debit">DEBIT</span>
+            {% endif %}
+          </td>
+          <td style="font-weight: bold; font-family: monospace; {% if tx.amount >= 0 %}color: var(--bank-green);{% else %}color: #f87171;{% endif %}">
+            {% if tx.amount >= 0 %}+{% endif %}${{ "{:,.2f}".format(tx.amount) }}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="5" style="text-align: center; color: var(--bank-text-muted);">No transaction records recorded for this account.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CyberBank Portal{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/banking.css') }}">
+</head>
+<body>
+  <header class="bank-header">
+    <div class="bank-brand">
+      CYBER<span>BANK</span> ONLINE
+    </div>
+
+    <nav class="bank-nav">
+      {% if session.get('user_id') %}
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('account_view') }}">My Account</a>
+        <a href="{{ url_for('transactions_view') }}">Transactions</a>
+        <span style="color: var(--bank-accent); font-weight: 700; font-size: 0.85rem;">{{ session.get('full_name') }}</span>
+        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-primary">Sign Out</a>
+      {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-sm btn-primary">Sign In</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main class="bank-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
