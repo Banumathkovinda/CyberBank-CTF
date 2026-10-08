@@ -1,0 +1,21 @@
+================================================================
+CYBERBANK DFIR CASE: CB-IR-2026-0882
+WORKSTATION SEIZURE ARTIFACT — SCRATCHPAD MEMO
+RECOVERED PATH: /home/d.chen/.local/share/notes_archive.txt
+================================================================
+
+[OPERATOR SCRATCHPAD]
+- System Workstation: WS-INVEST-SEC04 (10.10.20.155)
+- Compromised Operator Account: d.chen
+- Staging External Relay: 203.0.113.88:8443
+- Target Vault Archive: blackvault_stage05_custody.tar.gz
+
+[INCIDENT RESPONSE RECONSTRUCTION INSTRUCTIONS]
+An unauthorized session exfiltrated the BlackVault custody ledger.
+To confirm the complete attack chain for the triage report:
+1. Identify the compromised account and source IP in auth.log.
+2. Note the hijacked session token generated in application.log / web_access.log.
+3. Open network_capture.pcap in Wireshark and filter for HTTP traffic on TCP port 8443.
+4. Follow the TCP stream to inspect the server's exfiltration response receipt.
+5. Recover the forensic authorization flag to validate full incident reconstruction.
+================================================================

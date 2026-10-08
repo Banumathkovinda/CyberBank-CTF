@@ -1,0 +1,25 @@
+================================================================
+CYBERBANK INCIDENT RESPONSE UNIT (DFIR ALPHA)
+EVIDENCE CUSTODY LOG & FORENSIC METADATA
+================================================================
+Case ID: CB-IR-2026-0882
+Incident Type: Workstation Intrusion & Unauthorized Data Exfiltration
+Seized Machine: WS-INVEST-SEC04 (Asset Tag: CB-WS-09412)
+IP Address: 10.10.20.155
+Seizure Timestamp: 2026-08-16 04:00:00 UTC
+Lead Investigator: Inspector Sarah Vance, Lead DFIR Specialist
+
+ARTIFACT ROSTER:
+1. auth.log                - System authentication and PAM session logs
+2. web_access.log          - Workstation web portal proxy and API access logs
+3. application.log         - CyberBank Core Vault application event traces
+4. network_capture.pcap    - Perimeter packet capture covering incident window
+5. suspicious_note.txt     - Scrap memorandum recovered from user profile
+6. metadata.txt            - Chain of custody and forensic briefing (this document)
+
+INVESTIGATION GUIDELINES:
+- Establish a chronological attack timeline from reconnaissance to exfiltration.
+- Correlate external attacker source IP (RFC 5737 TEST-NET range).
+- Trace the specific user credentials hijacked and the session identifier issued.
+- Analyze the packet capture stream in Wireshark to locate the unencrypted exfiltration receipt.
+================================================================
