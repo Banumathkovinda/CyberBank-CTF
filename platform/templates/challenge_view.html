@@ -211,8 +211,13 @@
 
         <!-- Audit Directive -->
         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-family: var(--font-mono); font-size: 0.85rem;">
-          <div style="color: var(--text-secondary);">
-            <strong style="color: var(--copper-light);">AUDIT DIRECTIVE:</strong> Authenticate via SSH and enumerate privileges using <code style="color: var(--neon-green-bright); background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold;">sudo -l</code>
+          <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
+            <div style="color: var(--text-secondary);">
+              <strong style="color: var(--copper-light);">AUDIT DIRECTIVE:</strong> Authenticate via SSH and inspect privileges with <code style="color: var(--neon-green-bright); background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold;">sudo -l</code>
+            </div>
+            <div style="color: var(--text-secondary);">
+              <strong style="color: var(--copper-light);">TARGET FLAG FILE:</strong> <code style="color: var(--neon-green-bright); background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold;">/root/blackvault_flag.txt</code>
+            </div>
           </div>
           <div>
             <strong style="color: var(--copper-light);">DOMAIN:</strong> <span style="color: #cbd5e1;">Linux / Privilege Escalation</span>
