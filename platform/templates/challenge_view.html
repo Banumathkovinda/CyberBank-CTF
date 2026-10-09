@@ -209,31 +209,14 @@
           </div>
         </div>
 
-        <!-- TACTICAL MISSION DIRECTIVE (Concise idea for participants) -->
-        <div style="background: rgba(5, 7, 12, 0.75); border: 1px solid rgba(200, 122, 72, 0.25); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem;">
-          <div style="font-size: 0.88rem; font-weight: 800; color: var(--copper-light); text-transform: uppercase; margin-bottom: 0.75rem; font-family: var(--font-mono); display: flex; align-items: center; gap: 0.5rem; letter-spacing: 0.05em; border-bottom: 1px dashed rgba(200, 122, 72, 0.25); padding-bottom: 0.5rem;">
-            <span style="color: var(--neon-green-bright);">&gt;</span> MISSION BRIEFING &amp; OBJECTIVE
+        <!-- Audit Directive -->
+        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-family: var(--font-mono); font-size: 0.85rem;">
+          <div style="color: var(--text-secondary);">
+            <strong style="color: var(--copper-light);">AUDIT DIRECTIVE:</strong> Authenticate via SSH and enumerate privileges using <code style="color: var(--neon-green-bright); background: rgba(0,0,0,0.6); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold;">sudo -l</code>
           </div>
-          <div style="font-family: var(--font-mono); font-size: 0.84rem; color: #cbd5e1; line-height: 1.6;">
-            <p style="margin: 0 0 0.75rem 0; color: var(--text-secondary);">
-              You are provisioned with low-privilege auditor access (<code style="color: #f59e0b;">analyst</code>) on BlackVault. Perform system enumeration to uncover a privilege escalation flaw and capture the master flag:
-            </p>
-            <ul style="margin: 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.45rem; color: #94a3b8;">
-              <li><strong style="color: #ffffff;">Initial Access:</strong> SSH into the server on port <code style="color: var(--neon-green-bright);">2222</code> using the provisioned auditor credentials above.</li>
-              <li><strong style="color: #ffffff;">System Audit:</strong> Enumerate user privileges, groups, and permitted sudo commands (<code style="color: var(--cyan);">sudo -l</code>).</li>
-              <li><strong style="color: #ffffff;">Permission Inspection:</strong> Analyze accessible maintenance scripts and inspect permissions of all sourced configuration files.</li>
-              <li><strong style="color: #ffffff;">Privilege Escalation:</strong> Exploit the discovered file permission weakness to elevate permissions to <strong style="color: var(--neon-green-bright);">root</strong>.</li>
-              <li><strong style="color: #ffffff;">Master Flag:</strong> Locate and read the protected clearance flag in <code style="color: var(--neon-green-bright);">/root/blackvault_flag.txt</code> and submit it below!</li>
-            </ul>
+          <div>
+            <strong style="color: var(--copper-light);">DOMAIN:</strong> <span style="color: #cbd5e1;">Linux / Privilege Escalation</span>
           </div>
-        </div>
-
-        <!-- Tooling and Domain Footer -->
-        <div style="padding-top: 1rem; border-top: 1px solid rgba(200, 122, 72, 0.25); display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.82rem; font-family: var(--font-mono); color: var(--text-secondary);">
-          <div><strong style="color: var(--copper-light);">SSH CONNECTION:</strong> <code style="color: var(--neon-green-bright);">ssh analyst@localhost -p 2222</code></div>
-          <div><strong style="color: var(--copper-light);">REQUIRED TOOLS:</strong> OpenSSH Client, Linux CLI, find, sudo, ls, grep, cat</div>
-          <div><strong style="color: var(--copper-light);">DOMAIN:</strong> Linux / System Security &amp; Privilege Escalation</div>
-          <div><strong style="color: var(--copper-light);">FINAL OBJECTIVE:</strong> Retrieve <code style="color: var(--neon-green-bright);">/root/blackvault_flag.txt</code> (+300 PTS)</div>
         </div>
       </div>
 
@@ -318,18 +301,23 @@
           SOLVED &amp; POINTS RECORDED
         </div>
       {% else %}
-        <form method="POST" action="{{ url_for('submission.submit_flag', challenge_id=challenge.id) }}" style="display: flex; gap: 0.5rem; min-width: 340px;">
-          <input 
-            type="text" 
-            name="flag" 
-            class="form-input" 
-            placeholder="CBANK{...}" 
-            required 
-            autocomplete="off"
-            style="font-family: var(--font-mono);"
-          >
-          <button type="submit" class="btn btn-primary">Submit Flag</button>
-        </form>
+        <div style="display: flex; flex-direction: column; gap: 0.35rem; min-width: 340px;">
+          <form method="POST" action="{{ url_for('submission.submit_flag', challenge_id=challenge.id) }}" style="display: flex; gap: 0.5rem;">
+            <input 
+              type="text" 
+              name="flag" 
+              class="form-input" 
+              placeholder="CBANK{...}" 
+              required 
+              autocomplete="off"
+              style="font-family: var(--font-mono);"
+            >
+            <button type="submit" class="btn btn-primary">Submit Flag</button>
+          </form>
+          <div style="font-size: 0.72rem; color: #f87171; font-family: var(--font-mono); text-align: right;">
+            * Penalty: -10 PTS per incorrect attempt (score min: 0 PTS)
+          </div>
+        </div>
       {% endif %}
     </div>
   </div>

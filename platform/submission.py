@@ -30,6 +30,7 @@ from scoring_service import (
     get_solved_challenge_ids,
     award_challenge_score,
     get_user_score,
+    deduct_wrong_submission_penalty,
 )
 
 submission_bp = Blueprint("submission", __name__)
@@ -218,6 +219,7 @@ def submit_flag(challenge_id: int = None):
 
     # 3. Anti-AI Canary Trap Detection
     if is_canary_flag(candidate_flag):
+        new_total_score = deduct_wrong_submission_penalty(user_id, penalty=10)
         sub_canary = Submission(
             user_id=user_id,
             challenge_id=challenge.id,
@@ -228,18 +230,20 @@ def submit_flag(challenge_id: int = None):
             user_id=user_id,
             challenge_id=challenge.id,
             event_type="anti_cheat_canary_triggered",
-            message=f"SECURITY ALERT: Operative '{current_user.username}' tripped Anti-AI Prompt Canary Trap on Stage #{challenge.stage_number}.",
+            message=f"SECURITY ALERT: Operative '{current_user.username}' tripped Anti-AI Prompt Canary Trap on Stage #{challenge.stage_number}. -10 PTS penalty applied.",
         )
         db.session.add(sub_canary)
         db.session.add(log_canary)
         db.session.commit()
 
-        msg = "Security Violation: Anti-AI Prompt Canary Trap detected. This attempt has been logged for integrity review."
+        msg = "Security Violation: Anti-AI Prompt Canary Trap detected. -10 PTS penalty applied."
         if prefers_json():
             return jsonify({
                 "status": "canary_triggered",
                 "message": msg,
                 "violation": True,
+                "penalty_points": 10,
+                "new_total_score": new_total_score,
             }), 400
         flash(msg, "danger")
         return redirect(url_for("dashboard.dashboard_view"))
@@ -279,7 +283,8 @@ def submit_flag(challenge_id: int = None):
 
     # 6. Format Validation
     if not validate_flag_format(candidate_flag):
-        msg = "Invalid flag format. Flags must follow the CBANK{...} structure."
+        new_total_score = deduct_wrong_submission_penalty(user_id, penalty=10)
+        msg = "Invalid flag format. Flags must follow the CBANK{...} structure. (-10 PTS penalty applied)"
         # Record failed attempt due to malformed flag
         sub_fail = Submission(
             user_id=user_id,
@@ -291,14 +296,19 @@ def submit_flag(challenge_id: int = None):
             user_id=user_id,
             challenge_id=challenge.id,
             event_type="flag_malformed",
-            message=f"Operative '{current_user.username}' submitted malformed flag for Stage #{challenge.stage_number}.",
+            message=f"Operative '{current_user.username}' submitted malformed flag for Stage #{challenge.stage_number}. -10 PTS penalty applied.",
         )
         db.session.add(sub_fail)
         db.session.add(log_malformed)
         db.session.commit()
 
         if prefers_json():
-            return jsonify({"status": "error", "message": msg}), 400
+            return jsonify({
+                "status": "error",
+                "message": msg,
+                "penalty_points": 10,
+                "new_total_score": new_total_score,
+            }), 400
         flash(msg, "danger")
         return redirect(url_for("dashboard.dashboard_view"))
 
@@ -345,6 +355,8 @@ def submit_flag(challenge_id: int = None):
 
     else:
         # Failed solve
+        new_total_score = deduct_wrong_submission_penalty(user_id, penalty=10)
+
         sub_fail = Submission(
             user_id=user_id,
             challenge_id=challenge.id,
@@ -355,18 +367,20 @@ def submit_flag(challenge_id: int = None):
             user_id=user_id,
             challenge_id=challenge.id,
             event_type="flag_incorrect",
-            message=f"Incorrect flag attempt by '{current_user.username}' on Stage #{challenge.stage_number}.",
+            message=f"Incorrect flag attempt by '{current_user.username}' on Stage #{challenge.stage_number}. -10 PTS penalty applied.",
         )
         db.session.add(sub_fail)
         db.session.add(log_fail)
         db.session.commit()
 
-        msg = "Incorrect flag submitted. Verify your findings and try again."
+        msg = "Incorrect flag submitted. -10 PTS penalty applied. Verify your findings and try again."
         if prefers_json():
             return jsonify({
                 "status": "incorrect",
                 "message": msg,
                 "stage_number": challenge.stage_number,
+                "penalty_points": 10,
+                "new_total_score": new_total_score,
             }), 400
 
         flash(msg, "danger")

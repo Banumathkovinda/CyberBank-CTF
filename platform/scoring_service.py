@@ -73,6 +73,23 @@ def award_challenge_score(user_id: int, points: int) -> int:
     return score_record.total_score
 
 
+def deduct_wrong_submission_penalty(user_id: int, penalty: int = 10, min_score: int = 0) -> int:
+    """
+    Deduct penalty points from user's total score for an incorrect or failed flag submission.
+    Clamps the total score so it does not fall below min_score (default 0).
+    Returns the new updated total score.
+    """
+    score_record = Score.query.filter_by(user_id=user_id).first()
+    if not score_record:
+        score_record = Score(user_id=user_id, total_score=0)
+        db.session.add(score_record)
+
+    score_record.total_score = max(min_score, score_record.total_score - penalty)
+    score_record.updated_at = datetime.datetime.utcnow()
+    db.session.flush()
+    return score_record.total_score
+
+
 def format_duration(seconds: int) -> str:
     """Format duration in seconds into clean HHh MMm SSs or MMm SSs string."""
     if seconds is None or seconds < 0:

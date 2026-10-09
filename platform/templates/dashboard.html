@@ -170,7 +170,7 @@
               </div>
             {% elif chal.status == 'available' %}
               <a href="{{ url_for('dashboard.challenge_detail_view', challenge_id=chal.id) }}" class="btn btn-copper btn-sm">
-                Open Mission Dossier &rarr;
+                Open Dossier &rarr;
               </a>
             {% else %}
               <span class="lock-hint">Requires Stage 0{{ chal.stage_number - 1 }}</span>

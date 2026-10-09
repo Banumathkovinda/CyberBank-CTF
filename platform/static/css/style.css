@@ -1303,7 +1303,7 @@ body {
 
 .stages-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
 }
 
@@ -1313,7 +1313,7 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-copper);
   border-radius: 12px;
-  padding: 1.65rem;
+  padding: 1.45rem 1.4rem 1.35rem;
   display: flex;
   flex-direction: column;
   transition: all 0.25s ease;
@@ -1448,17 +1448,18 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem 0.75rem;
   border-top: 1px solid rgba(200, 122, 72, 0.25);
   padding-top: 0.85rem;
   margin-top: auto;
-  gap: 0.75rem;
 }
 
 .stage-tags {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
+  gap: 0.45rem;
+  flex-wrap: wrap;
 }
 
 .difficulty-pill {
@@ -1486,6 +1487,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  margin-left: auto;
+}
+
+.stage-action .btn-sm {
+  padding: 0.38rem 0.75rem;
+  font-size: 0.76rem;
 }
 
 .btn-sm {

@@ -304,3 +304,45 @@ def test_player_cannot_reset_expired_mission_timer(test_app, test_client, test_u
     assert resp.status_code == 403
     assert resp.get_json()["status"] == "expired"
 
+
+def test_wrong_flag_penalty_deducts_10_points(test_app, test_client, test_user):
+    """Submitting wrong or malformed flags deducts 10 points from total score, clamped at 0."""
+    login_user(test_client)
+
+    # Solve Stage 1 first to earn 100 points
+    resp1 = test_client.post(
+        "/submit",
+        json={"challenge_id": 1, "flag": "CBANK{OSINT_f00tpr1nt_d1g1t4l_9821}"},
+    )
+    assert resp1.status_code == 200
+    assert resp1.get_json()["new_total_score"] == 100
+
+    # Submit an incorrect flag for Stage 2 -> score decreases from 100 to 90
+    resp_wrong = test_client.post(
+        "/submit",
+        json={"challenge_id": 2, "flag": "CBANK{STEGO_WRONG_GUESS_9999}"},
+    )
+    assert resp_wrong.status_code == 400
+    data_wrong = resp_wrong.get_json()
+    assert data_wrong["status"] == "incorrect"
+    assert data_wrong["penalty_points"] == 10
+    assert data_wrong["new_total_score"] == 90
+
+    with test_app.app_context():
+        score = Score.query.filter_by(user_id=test_user).first()
+        assert score.total_score == 90
+
+    # Submit a malformed flag -> also deducts 10 points (90 -> 80)
+    resp_malformed = test_client.post(
+        "/submit",
+        json={"challenge_id": 2, "flag": "INVALID_FLAG_FORMAT"},
+    )
+    assert resp_malformed.status_code == 400
+    data_mal = resp_malformed.get_json()
+    assert data_mal["penalty_points"] == 10
+    assert data_mal["new_total_score"] == 80
+
+    with test_app.app_context():
+        score = Score.query.filter_by(user_id=test_user).first()
+        assert score.total_score == 80
+
