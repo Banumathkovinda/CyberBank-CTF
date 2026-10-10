@@ -387,3 +387,22 @@ def test_simulated_privilege_escalation():
             with open(out_flag, "r") as f:
                 extracted = f.read().strip()
             assert extracted == EXPECTED_FLAG
+
+
+def test_stage6_solver_script_exists_and_runs():
+    """15. Ensure Member 3's Stage 6 solver script exists and recovers the expected flag."""
+    script_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "scripts", "member3", "stage6_solver.py")
+    )
+    assert os.path.isfile(script_path), "stage6_solver.py not found in scripts/member3/"
+
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("stage6_solver", script_path)
+    solver_mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(solver_mod)
+
+    backend = solver_mod.SimulationBackend()
+    solver = solver_mod.Stage6Solver(backend=backend)
+    flag, _ = solver.solve()
+    assert flag == EXPECTED_FLAG
+

