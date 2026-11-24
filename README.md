@@ -18,14 +18,6 @@
 | **Target Architecture** | Docker Compose multi-container stack (Flask, MySQL 8.0, Linux SSH, Vulnerable Web App) |
 | **Supported OS** | Windows 10/11 (PowerShell), macOS (zsh), Linux (bash) |
 
-### Group Members & Technical Responsibilities
-
-| Group Member | Student Registration ID | Email | Technical Role | Primary Contribution Scope |
-| :--- | :---: | :---: | :---: | :--- |
-| **BLBK Bogahapitiya** | **IT24102626** | `banumathkovinda954@gmail.com` | **Member 1** | **CTF Platform & Architecture**: Flask core, Docker Compose stack, database modeling, authentication, live countdown timer, and health check. |
-| **Arachchi B A A A B** | **IT24102592** | `alokaashen777@gmail.com` | **Member 2** | **Challenge Design A (Stages 1–3)**: OSINT developer dossier, multi-layer steganography, IDOR banking application, and automated solver. |
-| **Kumarasinghe KWTP** | **IT24102485** | `pasindukumarasinghe200@gmail.com` | **Member 3** | **Challenge Design B (Stages 4–6)**: Hex/ROT13 cipher memo, DFIR log/PCAP evidence synthesis, Linux privilege escalation target, and automated solver. |
-| **Ariyapperuma** | **IT24103108** | `ariyapperumadenith@gmail.com` | **Member 4** | **Integration, Testing & Quality Assurance**: Pytest test suite (116 tests), anti-cheat validation, end-to-end integration test script, and technical documentation. |
 
 ---
 
@@ -245,31 +237,9 @@ Each stage includes three progressive hints with tiered score deductions:
 - **Hint 3:** -30% point penalty
 *(Maximum cumulative penalty: 60%. Minimum achievable score per stage: 40% of base points.)*
 
----
 
-## 6. Individual Member Automation & Verification Scripts
 
-In accordance with Assignment 02 specifications, each group member maintains a dedicated Python automation or verification script:
 
-### Member 1: [scripts/member1/health_check.py](file:///c:/Users/ASUS/Desktop/bank%20CTF/CyberBank-CTF/scripts/member1/health_check.py)
-- **Role:** Platform Architecture & Infrastructure Verification
-- **Function:** Automated health probe testing TCP socket listeners (5000, 8080, 2222), HTTP `/health` telemetry, database connectivity, and Docker container lifecycles.
-- **Run:** `python scripts/member1/health_check.py`
-
-### Member 2: [scripts/member2/stage3_solver.py](file:///c:/Users/ASUS/Desktop/bank%20CTF/CyberBank-CTF/scripts/member2/stage3_solver.py)
-- **Role:** Web Security & Challenge Design A
-- **Function:** Automated programmatic verification script that logs into the vulnerable banking portal, iterates through account parameters, and demonstrates BOLA/IDOR exploitation.
-- **Run:** `python scripts/member2/stage3_solver.py`
-
-### Member 3: [scripts/member3/stage6_solver.py](file:///c:/Users/ASUS/Desktop/bank%20CTF/CyberBank-CTF/scripts/member3/stage6_solver.py)
-- **Role:** Linux Privilege Escalation & Challenge Design B
-- **Function:** Automated privilege escalation exploit script for the BlackVault Debian target, demonstrating configuration tampering via group-writable `/etc/blackvault/backup.conf` and privileged execution via `sudo /opt/blackvault/bin/vault_backup.sh` to extract the master root flag.
-- **Run:** `python scripts/member3/stage6_solver.py`
-
-### Member 4: [scripts/member4/integration_test.py](file:///c:/Users/ASUS/Desktop/bank%20CTF/CyberBank-CTF/scripts/member4/integration_test.py)
-- **Role:** Integration, Testing & Quality Assurance
-- **Function:** Comprehensive end-to-end integration test automating user registration, sequential flag submissions, locked stage boundary enforcement, and scoreboard updates.
-- **Run:** `python scripts/member4/integration_test.py`
 
 ---
 
